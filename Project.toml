@@ -1,0 +1,18 @@
+name = "QEM4Molly"
+uuid = "44e082e6-23ba-4416-889c-87da58b22495"
+authors = ["Xuanzhao Gao"]
+version = "1.0.0-DEV"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Molly = "aa0f7f06-fcc0-5ec4-a7f3-a573f33f9c4c"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
