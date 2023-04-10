@@ -1,7 +1,7 @@
-@time @testset "substrate_LJ Q2D simulation" begin
+@time @testset "short_range test via simulation" begin
     n_atoms = 100
     atom_mass = 1.0u"NoUnits"
-    atoms = [Atom(mass=atom_mass, σ=0.3u"NoUnits", ϵ=0.2u"NoUnits") for i in 1:n_atoms]
+    atoms = [Atom(mass=atom_mass, σ=0.3u"NoUnits", ϵ=0.2u"NoUnits", charge = (-1.0)^i) for i in 1:n_atoms]
 
     L_x = 10.0
     L_y = 10.0
@@ -17,7 +17,7 @@
     pairwise_inters = (LennardJones(;energy_units = u"NoUnits", force_units = u"NoUnits",),)
     s = 0.5
     e = 1
-    general_inters = (Substrate_LJ(;cutoff = 1.0, sigma = s , eps = e, sub_pos = -0.5, direction = +1), Substrate_LJ(;cutoff = 1.0, sigma = s, eps = e, sub_pos = 9.5, direction = -1),)
+    general_inters = (Substrate_LJ(;cutoff = 0.5, sigma = s , eps = e, sub_pos = -0.5, direction = +1), Substrate_LJ(;cutoff = 1.0, sigma = s, eps = e, sub_pos = 9.5, direction = -1), QEM_short(; cutoff = 0.5, L = (10.0, 10.0, 10.0), neighbor_list = [], n_steps = 0, iter_period = 100, gamma_1 = 0, gamma_2 = 0, eps_0 = 1, accuracy = 10^(-6), N_t = 30))
 
     sys = System(
         atoms=atoms,

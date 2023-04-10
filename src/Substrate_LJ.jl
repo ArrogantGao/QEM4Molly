@@ -16,7 +16,7 @@ function Substrate_LJ(;cutoff = 1.0, sigma = 0.5, eps = 1.0, sub_pos = 0.0, dire
     return Substrate_LJ{typeof(cutoff), typeof(sigma), typeof(eps), typeof(sub_pos), typeof(direction)}(cutoff, sigma, eps, sub_pos, direction)
 end
 
-@fastmath function substrate_LJ(invr2, sigma2, epsilon)
+@fastmath function substrate_LJ_force(invr2, sigma2, epsilon)
     six_term = (sigma2 * invr2) ^ 3
     return (24 * epsilon * invr2) * (2 * six_term ^ 2 - six_term)
 end
@@ -37,7 +37,7 @@ end
         @assert inter.direction * dz > 0 "Particle run out of the box!"
         if dz < inter.cutoff
             invr2 = 1 / (dz)^2
-            fz = inter.direction * substrate_LJ(invr2, sigma2, epsilon)
+            fz = inter.direction * substrate_LJ_force(invr2, sigma2, epsilon)
             F[i][3] = fz
         end
     end

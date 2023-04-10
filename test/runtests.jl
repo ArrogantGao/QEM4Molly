@@ -3,11 +3,15 @@ using Test
 using LinearAlgebra
 using Unitful
 using Molly
+using CellListMap
+using Conda
+using PyCall
 
-# include("basics.jl")
-include("sub_LJ.jl")
+# test passed
+# include("sub_LJ.jl")
+# include("QEM_short_test.jl")
+# include("greens_funtion.jl")
+# include("Guassian_int.jl")
 
-# @testset "QEM4MOLLY.jl" begin
-#     # Write your tests here.
-
-# end
+# test to do done
+include("Force_short_test.jl")

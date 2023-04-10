@@ -4,8 +4,19 @@ module QEM4Molly
 
 using Molly
 using LinearAlgebra
+using CellListMap # this will be used for a neighbors generator in force calculation
+# using Integrator
+using SpecialFunctions # here we will use besselj0(x) and besselj1(x) in this package
+using GaussQuadrature
 
 
-include("basics.jl")
+include("Substrate_LJ.jl")
+
+include("QEM_short.jl")
+include("greens_function.jl")
+include("Force_short.jl")
+include("Gaussian_int.jl")
+
+# include("QEM_long_range.jl")
 
 end
