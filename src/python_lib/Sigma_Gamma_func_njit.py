@@ -134,6 +134,7 @@ def F_long_xy_sum_2(k_set, POSCAR, z_list):
         q_i, x_i, y_i, z_i = POSCAR[l]
         C[0] += q_i * exp( - k * z_i) * cos(k_x * x_i + k_y * y_i)
         D[0] += q_i * exp( - k * z_i) * sin(k_x * x_i + k_y * y_i)
+    
 
     for i in range(0, NUM_particle - 1):
         l = z_list[i]

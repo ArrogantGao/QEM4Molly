@@ -23,9 +23,9 @@ end
 
 # the function to calculate the pairwise interaction between i and j
 function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool = false)
-    γ_1 = inter.gamma_1
-    γ_2 = inter.gamma_2
-    ϵ_0 = inter.eps_0
+    gamma_1 = inter.gamma_1
+    gamma_2 = inter.gamma_2
+    eps_0 = inter.eps_0
     L_x, L_y, L_z = inter.L
 
     # k_f1 and k_f2 are the cutoff of the intergrals
@@ -42,7 +42,7 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
     F_ij = [0, 0, 0]
 
     for (i, j, rho_ij) in n_list
-        element = greens_element_ij_init(γ_1, γ_2, coord_i[3], coord_j[3], rho_ij, L_z, inter.alpha)
+        element = greens_element_ij_init(gamma_1, gamma_2, coord_i[3], coord_j[3], rho_ij, L_z, inter.alpha)
 
         if rho_ij != 0
 
@@ -72,7 +72,7 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
 
         F_sz_ij = + F_sz_p_ij_1 - F_sz_p_ij_2 - F_sz_g_ij
 
-        F_ij = q_i * q_j / (2 * π * ϵ_0) * [F_sx_ij, F_sy_ij, F_sz_ij]
+        F_ij = q_i * q_j / (2 * π * eps_0) * [F_sx_ij, F_sy_ij, F_sz_ij]
     end
 
     return F_ij
@@ -81,9 +81,9 @@ end
 # this function is used to calculate the self interaction in z direction on particle i
 
 function F_short_i(q_i, coord_i, inter; single::Bool = false)
-    γ_1 = inter.gamma_1
-    γ_2 = inter.gamma_2
-    ϵ_0 = inter.eps_0
+    gamma_1 = inter.gamma_1
+    gamma_2 = inter.gamma_2
+    eps_0 = inter.eps_0
     L_x, L_y, L_z = inter.L
 
     # k_f1 and k_f2 are the cutoff of the intergrals
@@ -92,7 +92,7 @@ function F_short_i(q_i, coord_i, inter; single::Bool = false)
 
     x_i, y_i, z_i = coord_i
 
-    element = greens_element_i_init(γ_1, γ_2, z_i, L_z, inter.alpha)
+    element = greens_element_i_init(gamma_1, gamma_2, z_i, L_z, inter.alpha)
 
     F_sz_p_i_1 = Gauss_Legendre(F_sz_point_c; para = element, region = (0, k_f2), Step = inter.N_t)
     F_sz_p_i_2 = 0.5 * sum(element.b[l] * element.a[l] * element.sign_a[l] / (element.a[l]^3) for l in [2, 3])
@@ -103,7 +103,7 @@ function F_short_i(q_i, coord_i, inter; single::Bool = false)
     end
 
     F_sz_i = - F_sz_p_i_1 + F_sz_p_i_2 + F_sz_g_i
-    F_i = - q_i^2 / (2 * π * ϵ_0) * [0, 0, F_sz_i]
+    F_i = - q_i^2 / (2 * π * eps_0) * [0, 0, F_sz_i]
 
     return F_i
 end

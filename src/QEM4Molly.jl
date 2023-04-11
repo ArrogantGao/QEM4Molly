@@ -17,6 +17,7 @@ include("greens_function.jl")
 include("Force_short.jl")
 include("Gaussian_int.jl")
 
-# include("QEM_long_range.jl")
+include("QEM_long.jl")
+include("Force_long.jl")
 
 end

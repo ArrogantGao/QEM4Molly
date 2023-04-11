@@ -15,3 +15,4 @@ using PyCall
 
 # test to do done
 include("Force_short_test.jl")
+include("Force_long_test.jl")
