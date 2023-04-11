@@ -26,7 +26,7 @@ function K_set_generator(L_x::L, L_y::L, alpha::AL, accuracy::AC) where{L<:Real,
 
     # In this way we can aviod problem cased by small S_x and S_y
     sum_K = S_x + S_y + S_x * S_y
-    K = Float32[]
+    K = []
     P = Float32[]
 
     for m_x in - mx_max : mx_max
@@ -35,7 +35,7 @@ function K_set_generator(L_x::L, L_y::L, alpha::AL, accuracy::AC) where{L<:Real,
             k_y = m_y * 2π / L_y
             k = sqrt(k_x^2 + k_y^2)
             if k != 0
-                K = push!(K, k)
+                K = push!(K, [k_x, k_y, k])
                 P = push!(P, exp(-k^2 / (4 * alpha))/sum_K)
             end
         end

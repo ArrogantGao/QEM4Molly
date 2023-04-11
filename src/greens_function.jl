@@ -39,6 +39,20 @@ function greens_element_i_init(gamma_1, gamma_2, z_i, L_z, alpha)
     return greens_element{typeof(gamma_1), typeof(gamma_2), typeof(rho_ij), typeof(a), typeof(b), typeof(sign_a), typeof(L_z), typeof(alpha)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha)
 end
 
+# the part below defines the sturcture for long range interaction
+function greens_element_init(gamma_1, gamma_2, L_z, alpha)
+
+    rho_ij = 0
+
+    z_n = 0
+    z_p = 0
+    a = (z_n, z_p, 2 * L_z - z_p, 2 * L_z - z_n)
+    b = (1, gamma_1, gamma_2, gamma_1 * gamma_2)
+
+    sign_a = (0, -1, +1, 0)
+
+    return greens_element{typeof(gamma_1), typeof(gamma_2), typeof(rho_ij), typeof(a), typeof(b), typeof(sign_a), typeof(L_z), typeof(alpha)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha)
+end
 
 # these functions define the Gamma1/2, which is used in calculation of the potential
 function Gamma_1(k, element::greens_element)

@@ -149,7 +149,6 @@ function Flz_sort_k0(atoms, z_list, coords, element::greens_element)
         Q_2[i] = Q_2[i - 1] - q_i
     end
 
-    println(z_list, Q_1, Q_2)
     Fl_sort_k0_val = [zeros(3) for i in 1:n_atoms]
 
     for j in 1:n_atoms
@@ -205,8 +204,10 @@ function F_long(sys, inter::QEM_long)
     eps_0 = inter.eps_0
     L_x, L_y, L_z = inter.L
     alpha = inter.alpha
+    n_atoms = size(sys.coords)[1]
 
-    element = greens_element_ij_init(gamma_1, gamma_2, 0.0, 0.0, rho_ij, L_z, inter.alpha)
+    # here we set z_i = z_j = rho_ij = 0
+    element = greens_element_init(gamma_1, gamma_2, L_z, inter.alpha)
 
     F_long_val = [zeros(3) for i in 1:n_atoms]
 
@@ -233,7 +234,7 @@ function F_long(sys, inter::QEM_long)
     elseif inter.rbe_mode == true
         K_p = sample(inter.K_set, inter.Prob, inter.rbe_p)
         for k_set in K_p
-            F_long_val += F_l_total(k_set, sys, inter, element) * (inter.sum_k / inter.rbe_p)
+            F_long_val += F_l_total(k_set, sys, inter, element) * (inter.sum_K / inter.rbe_p)
         end
     end
 

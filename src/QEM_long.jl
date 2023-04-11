@@ -29,7 +29,7 @@ function QEM_long(L ; k_cutoff = 1.0, z_list = [], gamma_1 = 0, gamma_2 = 0, eps
     return QEM_long{typeof(k_cutoff), typeof(z_list), typeof(gamma_1), typeof(eps_0), typeof(L), typeof(accuracy), typeof(alpha), typeof(rbe_mode), typeof(rbe_p), typeof(sum_K), typeof(K_set), typeof(Prob)}(k_cutoff, z_list, gamma_1, gamma_2, eps_0, L, accuracy, alpha, rbe_mode, rbe_p, sum_K, K_set, Prob)
 end
 
-function Molly.force(inter::QEM_long, sys, neighbors=nothing)
+function Molly.forces(inter::QEM_long, sys, neighbors=nothing)
     n_atoms = size(sys.coords)[1]
 
     # update the z_list via bulket sorting (will be updated later)

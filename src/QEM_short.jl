@@ -24,15 +24,15 @@ function QEM_short(L, r_cutoff, alpha; iter_period = 100, gamma_1 = 0, gamma_2 =
     return QEM_short{typeof(r_cutoff), typeof(neighbor_list), typeof(n_steps), typeof(iter_period), typeof(gamma_1), typeof(gamma_2), typeof(eps_0), typeof(L), typeof(accuracy), typeof(N_t), typeof(alpha)}(r_cutoff, neighbor_list, n_steps, iter_period, gamma_1, gamma_2, eps_0, L, accuracy, N_t, alpha)
 end
 
-function Molly.force(inter::QEM_short, sys, neighbors=nothing)
+function Molly.forces(inter::QEM_short, sys, neighbors=nothing)
 
     n_atoms = size(sys.coords)[1]
 
     # update the number of step in the inter, and if the number is n times period, update the neighborlist
     inter.n_steps += 1
-    if (inter.n_steps - 1) % iter_period == 0
+    if (inter.n_steps - 1) % inter.iter_period == 0
         coords_q2d = [[x_i[1], x_i[2]] for x_i in sys.coords]
-        inter.neighbor_list = neighborlist(coords_q2d, inter.r_cutoff; unitcell = inter.unitcell)
+        inter.neighbor_list = neighborlist(coords_q2d, inter.r_cutoff; unitcell = [inter.L[1], inter.L[2]])
     end
 
     F_short = [zeros(Float64, 3) for i in 1:n_atoms]
@@ -52,7 +52,7 @@ function Molly.force(inter::QEM_short, sys, neighbors=nothing)
         q_i = sys.atoms[i].charge
         coord_i = sys.coords[i]
         F_i_z = F_short_i(q_i, coord_i, inter)
-        F_short[i][3] += F_i_z
+        F_short[i] .+= F_i_z
     end
 
     return F_short
