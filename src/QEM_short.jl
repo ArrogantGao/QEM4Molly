@@ -16,7 +16,10 @@ mutable struct QEM_short{C, NL, NS, IP, G1, G2, EP, LA, AC, NT, AL}
     alpha::AL
 end
 
-function QEM_short(; r_cutoff = 0.1, L = (1, 1, 1), neighbor_list = [], n_steps = 0, iter_period = 100, gamma_1 = 0, gamma_2 = 0, eps_0 = 1, accuracy = 10^(-6), N_t = 30, alpha = 1)
+function QEM_short(L, r_cutoff, alpha; iter_period = 100, gamma_1 = 0, gamma_2 = 0, eps_0 = 1, accuracy = 10^(-6), N_t = 30)
+    
+    neighbor_list = []
+    n_steps = 0
 
     return QEM_short{typeof(r_cutoff), typeof(neighbor_list), typeof(n_steps), typeof(iter_period), typeof(gamma_1), typeof(gamma_2), typeof(eps_0), typeof(L), typeof(accuracy), typeof(N_t), typeof(alpha)}(r_cutoff, neighbor_list, n_steps, iter_period, gamma_1, gamma_2, eps_0, L, accuracy, N_t, alpha)
 end

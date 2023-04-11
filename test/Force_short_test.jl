@@ -31,7 +31,7 @@
         q_j = 1
         coord_i = [5.0, 5.0, 0.2]
         coord_j = [5.1, 5.2, 0.15]
-        QEM_short_inter = QEM_short(; r_cutoff = 1.0, L = (10, 10, 2), neighbor_list = [], n_steps = 0, iter_period = 100, gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, accuracy = 10^(-9), N_t = 30, alpha = .1)
+        QEM_short_inter = QEM_short((10, 10, 2), 1.0, 1; iter_period = 100, gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, accuracy = 10^(-9), N_t = 30)
 
         F_x, F_y, F_z = F_short_ij(q_i, q_j, coord_i, coord_j, QEM_short_inter; single = true)
         F_x_self, F_y_self, F_z_self = F_short_i(q_i, coord_i, QEM_short_inter; single = true)

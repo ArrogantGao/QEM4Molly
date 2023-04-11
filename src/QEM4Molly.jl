@@ -8,6 +8,7 @@ using CellListMap # this will be used for a neighbors generator in force calcula
 # using Integrator
 using SpecialFunctions # here we will use besselj0(x) and besselj1(x) in this package
 using GaussQuadrature
+using StatsBase
 
 
 include("Substrate_LJ.jl")
@@ -19,5 +20,8 @@ include("Gaussian_int.jl")
 
 include("QEM_long.jl")
 include("Force_long.jl")
+include("K_set_generator.jl")
+
+include("Quasi_Ewald_Method.jl")
 
 end

@@ -36,7 +36,7 @@
         atoms = [Atom(mass=1.0, σ=0.3u"NoUnits", ϵ=0.2u"NoUnits", charge = (-1)^(i + 1)) for i in 1:n_atoms]
         coords = [[5.0, 5.0, 0.2], [5.1, 5.2, 0.15], [4.9, 4.9, 0.3], [5.5, 5.3, 0.4]]
 
-        QEM_short_inter = QEM_long(; k_cutoff = 1.0, z_list = [], gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, L = (10, 10, 2), accuracy = 1e-6, alpha = 1, rbe_mode = true, rbe_p = 30, sum_k = 1, K_set = [])
+        QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
         element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
 
@@ -92,7 +92,7 @@ end
         atoms = [Atom(mass=1.0, σ=0.3u"NoUnits", ϵ=0.2u"NoUnits", charge = (-1)^(i + 1)) for i in 1:n_atoms]
         coords = [[5.0, 5.0, 0.2], [5.1, 5.2, 0.15], [4.9, 4.9, 0.3], [5.5, 5.3, 0.4]]
 
-        QEM_short_inter = QEM_long(; k_cutoff = 1.0, z_list = [], gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, L = (10, 10, 2), accuracy = 1e-6, alpha = 1, rbe_mode = true, rbe_p = 30, sum_k = 1, K_set = [])
+        QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
         element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
 
@@ -147,7 +147,7 @@ end
         atoms = [Atom(mass=1.0, σ=0.3u"NoUnits", ϵ=0.2u"NoUnits", charge = (-1)^(i + 1)) for i in 1:n_atoms]
         coords = [[5.0, 5.0, 0.2], [5.1, 5.2, 0.15], [4.9, 4.9, 0.3], [5.5, 5.3, 0.4]]
 
-        QEM_short_inter = QEM_long(; k_cutoff = 1.0, z_list = [], gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, L = (10, 10, 2), accuracy = 1e-6, alpha = 1, rbe_mode = true, rbe_p = 30, sum_k = 1, K_set = [])
+        QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
         element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
 
@@ -194,7 +194,7 @@ end
         atoms = [Atom(mass=1.0, σ=0.3u"NoUnits", ϵ=0.2u"NoUnits", charge = (-1)^(i + 1)) for i in 1:n_atoms]
         coords = [[5.0, 5.0, 0.2], [5.1, 5.2, 0.15], [4.9, 4.9, 0.3], [5.5, 5.3, 0.4]]
 
-        QEM_short_inter = QEM_long(; k_cutoff = 1.0, z_list = [], gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, L = (10, 10, 2), accuracy = 1e-6, alpha = 1, rbe_mode = true, rbe_p = 30, sum_k = 1, K_set = [])
+        QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
         element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
 
@@ -276,11 +276,11 @@ end
             k = 1.0
         )
 
-        QEM_short_inter = QEM_long(; k_cutoff = 1.0, z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, L = (10, 10, 2), accuracy = 1e-6, alpha = 1, rbe_mode = true, rbe_p = 30, sum_k = 1, K_set = [])
+        QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
         element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
 
-        F_l_total_val = F_l_total([k_x, k_y, k], sys, QEM_short_inter, element)
+        F_l_total_val = F_l_total([k_x, k_y, k], sys, QEM_long_inter, element)
         
         @test F_l_total_val ≈ F_py
         

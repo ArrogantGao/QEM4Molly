@@ -230,11 +230,9 @@ function F_long(sys, inter::QEM_long)
                 end
             end
         end
-    else
-        for i in 1:inter.rbe_p
-            K_set_size = size(inter.K_set)
-            idx = rand(1:K_set_size)
-            k_set = K_set(idx)
+    elseif inter.rbe_mode == true
+        K_p = sample(inter.K_set, inter.Prob, inter.rbe_p)
+        for k_set in K_p
             F_long_val += F_l_total(k_set, sys, inter, element) * (inter.sum_k / inter.rbe_p)
         end
     end
