@@ -453,14 +453,6 @@ git-tree-sha1 = "9cc2baf75c6d09f9da536ddf58eb2f29dedaf461"
 uuid = "842dd82b-1e85-43dc-bf29-5d0ee9dffc48"
 version = "1.4.0"
 
-[[Integrator]]
-deps = ["GaussQuadrature", "LinearAlgebra", "Test"]
-git-tree-sha1 = "3bc76b04c4f06494b481ec5d31699d0e92d44af9"
-repo-rev = "main"
-repo-url = "/Users/gaoxuanzhao/code/Integrator"
-uuid = "0c7d673b-0e3f-4ae2-b68d-e14dfdf4dbb5"
-version = "1.0.0-DEV"
-
 [[IntelOpenMP_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "d979e54b71da82f3a65b62553da4fc3d18c9004c"
