@@ -38,7 +38,8 @@
 
         QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
-        element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        # element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        element = greens_element_init(g_1, g_2, 2, 1)
 
         Fl_non_sort_val = Fl_non_sort((k_x, k_y, sqrt(k_x^2 + k_y^2)), atoms, coords, element)
         
@@ -94,7 +95,8 @@ end
 
         QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
-        element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        # element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        element = greens_element_init(g_1, g_2, 2, 1)
 
         z_list = [2, 1, 3, 4]
         Fl_sort_val = Fl_sort([k_x, k_y, k], atoms, z_list, coords, element)
@@ -149,7 +151,8 @@ end
 
         QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
-        element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        # element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        element = greens_element_init(g_1, g_2, 2, 1)
 
         z_list = [2, 1, 3, 4]
         Flz_sort_k0_val = Flz_sort_k0(atoms, z_list, coords, element)
@@ -196,7 +199,8 @@ end
 
         QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
-        element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        # element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        element = greens_element_init(g_1, g_2, 2, 1)
 
         Flz_self_val = Flz_self([k_x, k_y, k], atoms, coords, element)
         
@@ -278,7 +282,8 @@ end
 
         QEM_long_inter = QEM_long((10, 10, 2) ; z_list = [2, 1, 3, 4], gamma_1 = g_1, gamma_2 = g_2)
 
-        element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        # element = greens_element_ij_init(g_1, g_2, 1, 1, 0, 2, 1)
+        element = greens_element_init(g_1, g_2, 2, 1)
 
         F_l_total_val = F_l_total([k_x, k_y, k], sys, QEM_long_inter, element)
         

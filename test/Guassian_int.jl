@@ -1,8 +1,8 @@
-function func_1(x)
+function func_1(x; l = 0)
     return 1
 end
 
-function func_2(x)
+function func_2(x; l = 0)
     return x
 end
 
@@ -20,17 +20,17 @@ end
     end
 end
 
-function func_3(x, para)
+function func_3(x, para; l = 0)
     k = para[1]
     return k
 end
 
-function func_4(x, para)
+function func_4(x, para; l = 0)
     k, n = para
     return k * x^n
 end
 
-function func_5(x, para::parameter)
+function func_5(x, para::parameter; l = 0)
     k = para.k
     n = para.n
     return k * x^n
