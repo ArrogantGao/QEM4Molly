@@ -29,6 +29,7 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
     L_x, L_y, L_z = inter.L
 
     # k_f1 and k_f2 are the cutoff of the intergrals
+    # these terms should be determined specially so that the integral can reach a better accuracy.
     k_f1 = sqrt( - 4 * inter.alpha * log(inter.accuracy))
     k_f2 = - log(inter.accuracy) / (2 * L_z)
 
