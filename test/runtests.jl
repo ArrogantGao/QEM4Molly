@@ -15,8 +15,12 @@ include("Guassian_int.jl")
 
 # test to do done
 include("Force_short_test.jl")
+<<<<<<< HEAD
 include("Force_long_test.jl")
+=======
+include("Force_long_test.jl")
+>>>>>>> main
 
 include("k_gen.jl")
 
-include("QEM_test.jl")
+# include("QEM_test.jl")
