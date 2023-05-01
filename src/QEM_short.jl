@@ -42,9 +42,9 @@ function Molly.forces(inter::QEM_short, sys, neighbors=nothing)
         q_i, q_j = sys.atoms[i].charge, sys.atoms[j].charge
         coord_i = sys.coords[i]
         coord_j = sys.coords[j]
-        F_ij = F_short_ij(q_i, q_j, coord_i, coord_j, inter)
-        F_short[i] += F_ij
-        F_short[j] -= F_ij
+        F_i, F_j = F_short_ij(q_i, q_j, coord_i, coord_j, inter)
+        F_short[i] += F_i
+        F_short[j] += F_j
     end
 
     # here we will compute the short range self interaction (only in z direction)
@@ -56,4 +56,30 @@ function Molly.forces(inter::QEM_short, sys, neighbors=nothing)
     end
 
     return F_short
+end
+
+function Molly.potential_energy(inter::QEM_short, sys, neighbors=nothing)
+
+    n_atoms = size(sys.coords)[1]
+
+    E_short = 0.0
+
+    # here we will compute the short range pairwise interaction
+    for (i, j, rho_fake) in inter.neighbor_list
+        q_i, q_j = sys.atoms[i].charge, sys.atoms[j].charge
+        coord_i = sys.coords[i]
+        coord_j = sys.coords[j]
+        E_ij = E_short_ij(q_i, q_j, coord_i, coord_j, inter)
+        E_short += E_ij
+    end
+
+    # here we will compute the short range self interaction
+    for i in 1:n_atoms
+        q_i = sys.atoms[i].charge
+        coord_i = sys.coords[i]
+        E_i = E_short_i(q_i, coord_i, inter)
+        E_short += E_i
+    end
+
+    return E_short
 end

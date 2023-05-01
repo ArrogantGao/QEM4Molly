@@ -35,20 +35,22 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
     #using a pairwise periodic neighborlist to get rho_ij
     n_list = neighborlist([[x_i, y_i], [x_j, y_j]], inter.r_cutoff; unitcell = [L_x, L_y])
 
-    #init the F_ij
-    F_ij = [0, 0, 0]
+    #init the F_i and F_j
+    F_i = [0, 0, 0]
+    F_j = [0, 0, 0]
 
     for (i, j, rho_ij) in n_list
-        element = greens_element_ij_init(gamma_1, gamma_2, coord_i[3], coord_j[3], rho_ij, L_z, inter.alpha, inter.accuracy)
-        k_f1 = element.k_f1
-        k_f2 = element.k_f2
+        element_i = greens_element_ij_init(gamma_1, gamma_2, coord_i[3], coord_j[3], rho_ij, L_z, inter.alpha, inter.accuracy)
+        element_j = greens_element_ij_init(gamma_1, gamma_2, coord_j[3], coord_i[3], rho_ij, L_z, inter.alpha, inter.accuracy)
+        k_f1 = element_i.k_f1
+        k_f2 = element_i.k_f2
 
         if rho_ij != 0
 
-            F_sr_p_ij_1 = sum(Gauss_Legendre(F_sr_point_c; para = element, region = (0, k_f2[l]), Step = inter.N_t, l = l) for l in 1:4)
-            F_sr_p_ij_2 = 0.5 * sum(element.b[l] * rho_ij / (element.a[l]^2 + rho_ij^2)^1.5 for l in 1:4)
+            F_sr_p_ij_1 = sum(Gauss_Legendre(F_sr_point_c; para = element_i, region = (0, k_f2[l]), Step = inter.N_t, l = l) for l in 1:4)
+            F_sr_p_ij_2 = 0.5 * sum(element_i.b[l] * rho_ij / (element_i.a[l]^2 + rho_ij^2)^1.5 for l in 1:4)
             if single == false
-                F_sr_g_ij = sum(Gauss_Legendre(F_sr_gauss_c; para = element, region = (0, k_f1[l]), Step = inter.N_t, l = l) for l in 1:4)
+                F_sr_g_ij = sum(Gauss_Legendre(F_sr_gauss_c; para = element_i, region = (0, k_f1[l]), Step = inter.N_t, l = l) for l in 1:4)
             else
                 F_sr_g_ij = 0
             end
@@ -61,20 +63,31 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
             F_sy_ij = 0
         end
 
-        F_sz_p_ij_1 = sum(Gauss_Legendre(F_sz_point_c; para = element, region = (0, k_f2[l]), Step = inter.N_t, l = l) for l in 1:4)
-        F_sz_p_ij_2 = 0.5 * sum(element.b[l] * element.a[l] * element.sign_a[l] / (element.a[l]^2 + rho_ij^2)^1.5 for l in 1:4)
+        # here I found that the force in z is different for particle i and j.
+        # so 
+        F_sz_p_i_1 = sum(Gauss_Legendre(F_sz_point_c; para = element_i, region = (0, k_f2[l]), Step = inter.N_t, l = l) for l in 1:4)
+        F_sz_p_i_2 = 0.5 * sum(element_i.b[l] * element_i.a[l] * element_i.sign_a[l] / (element_i.a[l]^2 + rho_ij^2)^1.5 for l in 1:4)
         if single == false
-            F_sz_g_ij = sum(Gauss_Legendre(F_sz_gauss_c; para = element, region = (0, k_f1[l]), Step = inter.N_t, l = l) for l in 1:4)
+            F_sz_g_i = sum(Gauss_Legendre(F_sz_gauss_c; para = element_i, region = (0, k_f1[l]), Step = inter.N_t, l = l) for l in 1:4)
         else
-            F_sz_g_ij = 0
+            F_sz_g_i = 0
         end
+        F_sz_i = + F_sz_p_i_1 - F_sz_p_i_2 - F_sz_g_i
 
-        F_sz_ij = + F_sz_p_ij_1 - F_sz_p_ij_2 - F_sz_g_ij
+        F_sz_p_j_1 = sum(Gauss_Legendre(F_sz_point_c; para = element_j, region = (0, k_f2[l]), Step = inter.N_t, l = l) for l in 1:4)
+        F_sz_p_j_2 = 0.5 * sum(element_j.b[l] * element_j.a[l] * element_j.sign_a[l] / (element_j.a[l]^2 + rho_ij^2)^1.5 for l in 1:4)
+        if single == false
+            F_sz_g_j = sum(Gauss_Legendre(F_sz_gauss_c; para = element_j, region = (0, k_f1[l]), Step = inter.N_t, l = l) for l in 1:4)
+        else
+            F_sz_g_j = 0
+        end
+        F_sz_j = + F_sz_p_j_1 - F_sz_p_j_2 - F_sz_g_j
 
-        F_ij = q_i * q_j / (2 * π * eps_0) * [F_sx_ij, F_sy_ij, F_sz_ij]
+        F_i = q_i * q_j / (2 * π * eps_0) * [F_sx_ij, F_sy_ij, F_sz_i]
+        F_j = q_i * q_j / (2 * π * eps_0) * [ - F_sx_ij, - F_sy_ij, F_sz_j]
     end
 
-    return F_ij
+    return F_i, F_j
 end
 
 # this function is used to calculate the self interaction in z direction on particle i

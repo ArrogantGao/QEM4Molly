@@ -5,7 +5,7 @@ from numpy import sqrt, pi, exp
 from neighbor_check import neighbor_check
 import numba as nb
 
-@nb.njit()
+# @nb.njit()
 def Gauss_Ledendra_int(func, Gauss_para, k_f, eps_1, eps_2, eps_3, L_z, z_j, z_i, rho_ji, alpha):
     Gauss_order = np.shape(Gauss_para)[0]
     SUM = 0
@@ -16,21 +16,21 @@ def Gauss_Ledendra_int(func, Gauss_para, k_f, eps_1, eps_2, eps_3, L_z, z_j, z_i
         SUM += t
     return SUM
 
-@nb.njit()
+# @nb.njit()
 def gauss_charge_intcore(k, eps_1, eps_2, eps_3, L_z, z_j, z_i, rho_ji, alpha): #func_para = [INCAR, POSCAR, j, i]
     gauss_chare_intcore_val = g.Gamma_func(k, eps_1, eps_2, eps_3, L_z, z_j, z_i) * exp(- k**2/ (4 * alpha)) * Bessel0(k * rho_ji)
     return gauss_chare_intcore_val
 
-@nb.njit()
+# @nb.njit()
 def point_charge_intcore(k, eps_1, eps_2, eps_3, L_z, z_j, z_i, rho_ji, alpha): #func_para = [INCAR, POSCAR, j, i]
     gauss_chare_intcore_val =  g.Gamma_funca(k, eps_1, eps_2, eps_3, L_z, z_j, z_i)  * Bessel0(k * rho_ji)
     return gauss_chare_intcore_val
 
-@nb.njit()
+# @nb.njit()
 def rho_cal(x_1, y_1, x_2, y_2):
     return sqrt((x_1 - x_2)**2 + (y_1 - y_2)**2)
 
-@nb.njit()
+# @nb.njit()
 def Energy_short_other_j(q_j, x_j, y_j, z_j, np_neighbor_list_j, Gauss_para_1, k_f1, Gauss_para_2, k_f2, eps_0, eps_1, eps_2, eps_3, L_z, alpha):
 
     Energy_short_other_val_j = 0
@@ -38,6 +38,8 @@ def Energy_short_other_j(q_j, x_j, y_j, z_j, np_neighbor_list_j, Gauss_para_1, k
     i = 0
     while np_neighbor_list_j[i][0] != 9999:
         q_i, x_i, y_i, z_i ,rho_ji = np_neighbor_list_j[i]
+        print(q_j, x_j, y_j, z_j, q_i, x_i, y_i, z_i)
+        rho_ji = np.sqrt((x_i - x_j)**2 + (y_i - y_j)**2)
 
         if rho_ji == 0:
             Energy_short_other_val_j = 0
@@ -53,6 +55,8 @@ def Energy_short_other_j(q_j, x_j, y_j, z_j, np_neighbor_list_j, Gauss_para_1, k
             for l in [0, 1, 2, 3]:
                 Energy_short_other_ji_point_b += Gamma_para_val[l] * gamma_2_val / sqrt(z_para_val[l]**2 + rho_ji**2)
 
+            print(Energy_short_other_ji_point_a, Energy_short_other_ji_point_b, Energy_short_other_ji_gauss)
+
             Energy_short_other_ji_val = (q_i * q_j / (4 * pi * eps_2 * eps_0)) * (Energy_short_other_ji_gauss - Energy_short_other_ji_point_a + Energy_short_other_ji_point_b)
 
             Energy_short_other_val_j += Energy_short_other_ji_val
@@ -60,7 +64,7 @@ def Energy_short_other_j(q_j, x_j, y_j, z_j, np_neighbor_list_j, Gauss_para_1, k
 
     return Energy_short_other_val_j
 
-@nb.njit()
+# @nb.njit()
 def Energy_short_self_j(q_j, x_j, y_j, z_j, np_neighbor_list_j, Gauss_para_1, k_f1, Gauss_para_2, k_f2, eps_0, eps_1, eps_2, eps_3, L_z, alpha):
 
     rho_ji = 0

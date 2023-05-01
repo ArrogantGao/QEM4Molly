@@ -23,23 +23,8 @@ def Energy_long_k_nonzero(POSCAR, RBM_p, K_set_shape, K_set, L_x, L_y, L_z, eps_
 
 @nb.njit()
 def Energy_long_kzero(POSCAR, RBM_p, K_set_shape, K_set, L_x, L_y, L_z, eps_0, eps_1, eps_2, eps_3, S, z_list, equal_cell, equal_size, equal_cell_room_num):
-    NUM_particle = np.shape(POSCAR)[0]
-    
-    Q_a = np.zeros(NUM_particle)
-    Q_b = np.zeros(NUM_particle)
 
-    Q_a[0] = 0
-    Q_b[0] = - POSCAR[z_list[0]][0]
-
-    for i in range(0, NUM_particle - 1):
-        Q_a[i + 1] = Q_a[i] + POSCAR[z_list[i]][0]
-        Q_b[i + 1] = Q_b[i] - POSCAR[z_list[i + 1]][0]
-
-    Energy_long_kzero_val = 0
-    for i in range(0, NUM_particle):
-        Energy_long_kzero_val += 2 * POSCAR[z_list[i]][0] * POSCAR[z_list[i]][3] * (Q_a[i] - Q_b[i])
-
-    Energy_long_kzero_val = - Energy_long_kzero_val / (4 * eps_2 * eps_0 * L_x * L_y)
+    Energy_long_kzero_val = - Sigma_Gamma_func_njit.Sigma_Gamma_func_k0(POSCAR, z_list) / (4 * eps_2 * eps_0 * L_x * L_y)
 
     return Energy_long_kzero_val
 

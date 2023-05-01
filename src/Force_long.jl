@@ -184,9 +184,6 @@ function Flz_self(k_set, atoms, coords, element::greens_element)
 end
 
 function F_l_total(k_set, sys, inter, element::greens_element)
-    gamma_1 = inter.gamma_1
-    gamma_2 = inter.gamma_2
-    eps_0 = inter.eps_0
     L_x, L_y, L_z = inter.L
 
     Fl_non_sort_val = Fl_non_sort(k_set, sys.atoms, sys.coords, element)
@@ -224,8 +221,8 @@ function F_long(sys, inter::QEM_long)
             for n_y in - n_y_max : n_y_max
                 k_x = 2 * π * n_x / L_x
                 k_y = 2 * π * n_y / L_y
-                k = sqrt(k_x^2 + k_y)
-                if k < inter.k_cutoff
+                k = sqrt(k_x^2 + k_y^2)
+                if k < inter.k_cutoff && k != 0
                     k_set = (k_x, k_y, k)
                     F_long_val += F_l_total(k_set, sys, inter, element) * exp(-k^2/(4 * alpha))
                 end

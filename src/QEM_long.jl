@@ -42,3 +42,10 @@ function Molly.forces(inter::QEM_long, sys, neighbors=nothing)
     return F_long(sys, inter)
 
 end
+
+function Molly.potential_energy(inter::QEM_long, sys, neighbors=nothing)
+    n_atoms = size(sys.coords)[1]
+    z_coord = [coord[3] for coord in sys.coords]
+    inter.z_list = sortperm(z_coord)
+    return E_long(sys, inter)
+end

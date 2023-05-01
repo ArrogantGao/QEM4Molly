@@ -5,6 +5,25 @@ from green_function_njit import Gamma_func, gamma, z_para, Gamma_para, partial_G
 import numba as nb
 
 @nb.njit()
+def Sigma_Gamma_func_k0(POSCAR, z_list):
+    NUM_particle = np.shape(POSCAR)[0]
+    
+    Q_a = np.zeros(NUM_particle)
+    Q_b = np.zeros(NUM_particle)
+
+    Q_a[0] = 0
+    Q_b[0] = - POSCAR[z_list[0]][0]
+
+    for i in range(0, NUM_particle - 1):
+        Q_a[i + 1] = Q_a[i] + POSCAR[z_list[i]][0]
+        Q_b[i + 1] = Q_b[i] - POSCAR[z_list[i + 1]][0]
+
+    Energy_long_kzero_val = 0
+    for i in range(0, NUM_particle):
+        Energy_long_kzero_val += 2 * POSCAR[z_list[i]][0] * POSCAR[z_list[i]][3] * (Q_a[i] - Q_b[i])
+    return Energy_long_kzero_val
+
+@nb.njit()
 def Sigma_Gamma_func_s(k_set, eps_1, eps_2, eps_3, POSCAR, L_z):
 
     k_x, k_y, K, k = k_set

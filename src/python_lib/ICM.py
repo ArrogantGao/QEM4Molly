@@ -163,8 +163,8 @@ def U_cal(INCAR, POSCAR, POS, N_image, N_real):
                         pos_j = POS[num_layer][num_particle_j]
                         U_total += U_ij(pos_i, pos_j, m_x, m_y, L_x, L_y, eps_2)
 
-    print('U_total = ')
-    print(U_total)
+    # print('U_total = ')
+    # print(U_total)
     return U_total
 
 
