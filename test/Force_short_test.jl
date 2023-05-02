@@ -33,14 +33,19 @@
         coord_j = [5.1, 5.2, 0.15]
         QEM_short_inter = QEM_short((10, 10, 2), 1.0, 1; iter_period = 100, gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, accuracy = 10^(-6), N_t = 30)
 
-        F_x, F_y, F_z = F_short_ij(q_i, q_j, coord_i, coord_j, QEM_short_inter; single = true)
-        F_x_self, F_y_self, F_z_self = F_short_i(q_i, coord_i, QEM_short_inter; single = true)
+        F_ij = F_short_ij(q_i, q_j, coord_i, coord_j, QEM_short_inter; single = true)
+        F_self_i = F_short_i(q_i, coord_i, QEM_short_inter; single = true)
+        F_self_j = F_short_i(q_j, coord_j, QEM_short_inter; single = true)
         
         # println(F_x, F_y, F_z, F_x_self, F_y_self, F_z_self)
-        @test isapprox(F_x, Fx_icm[1], atol = 1e-5)
-        @test isapprox(F_y, Fy_icm[1], atol = 1e-5)
-        @test isapprox(F_z, Fz_icm[1], atol = 1e-5)
-        @test isapprox(F_z_self, Fzs_icm[1], atol = 1e-5)
+        @test isapprox(F_ij[1][1], Fx_icm[1], atol = 1e-5)
+        @test isapprox(F_ij[1][2], Fy_icm[1], atol = 1e-5)
+        @test isapprox(F_ij[1][3], Fz_icm[1], atol = 1e-5)
+        @test isapprox(F_self_i[3], Fzs_icm[1], atol = 1e-5)
+        @test isapprox(F_ij[2][1], Fx_icm[2], atol = 1e-5)
+        @test isapprox(F_ij[2][2], Fy_icm[2], atol = 1e-5)
+        @test isapprox(F_ij[2][3], Fz_icm[2], atol = 1e-5)
+        @test isapprox(F_self_j[3], Fzs_icm[2], atol = 1e-5)
         # @test F_z ≈ Fz_icm[1] ≈ 1/(4 * π * (0.05)^2)
     end
 end
@@ -83,12 +88,13 @@ end
 
         # this is the julia lib
         QEM_short_inter = QEM_short((10, 10, 2), 1.0, .1; iter_period = 100, gamma_1 = g_1, gamma_2 = g_2, eps_0 = 1, accuracy = 10^(-6), N_t = 30)
-        F_x, F_y, F_z = F_short_ij(q_i, q_j, coord_i, coord_j, QEM_short_inter; single = false)
-        F_x_self, F_y_self, F_z_self = F_short_i(q_i, coord_i, QEM_short_inter; single = false)
+        F_i, F_j = F_short_ij(q_i, q_j, coord_i, coord_j, QEM_short_inter; single = false)
+        F_xi_self, F_yi_self, F_zi_self = F_short_i(q_i, coord_i, QEM_short_inter; single = false)
+        F_xj_self, F_yj_self, F_zj_self = F_short_i(q_j, coord_j, QEM_short_inter; single = false)
 
-        @test isapprox(F_x, F_xs, atol = 1e-5)
-        @test isapprox(F_y, F_ys, atol = 1e-5)
-        @test isapprox(F_z, F_zs_other, atol = 1e-5)
-        @test isapprox(F_zs_self, F_z_self, atol = 1e-5)
+        @test isapprox(F_i[1], F_xs, atol = 1e-5)
+        @test isapprox(F_i[2], F_ys, atol = 1e-5)
+        @test isapprox(F_i[3], F_zs_other, atol = 1e-5)
+        @test isapprox(F_zi_self, F_z_self, atol = 1e-5)
     end
 end

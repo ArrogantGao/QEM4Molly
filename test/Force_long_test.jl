@@ -13,8 +13,7 @@
         POSCAR = np.array([[1, 5.0, 5.0, 0.2], [-1, 5.1, 5.2, 0.15], [1, 4.9, 4.9, 0.3], [-1, 5.5, 5.3, 0.4]])
         L_x, L_y, L_z = (10, 10, 2)
         
-        k_x = 1
-        k_y = 1
+        k_x, k_y = rand(2)
         K = k_x^2 + k_y^2
         k = sqrt(K)
         k_set = np.array([k_x, k_y, K, k])
@@ -117,7 +116,7 @@ end
 
     np = pyimport("numpy")
 
-    for try_step in 1:1
+    for try_step in 1:10
 
         n_atoms = 4
 

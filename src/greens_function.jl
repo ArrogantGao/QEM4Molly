@@ -23,8 +23,8 @@ function greens_element_ij_init(gamma_1, gamma_2, z_i, z_j, rho_ij, L_z, alpha, 
 
     sign_a = ( - sign(z_i - z_j), -1, +1, sign(z_i - z_j))
 
-    k_f1 = - log(accuracy) ./ (2 * L_z .+ a)
-    k_f2 = sqrt.(4 * alpha^2 .* a.^2 .- 4 * alpha * log(accuracy)) .- 2 * alpha .* a
+    k_f1 = sqrt.(4 * alpha^2 .* a.^2 .- 4 * alpha * log(accuracy)) .- 2 * alpha .* a
+    k_f2 = - log(accuracy) ./ (2 * L_z .+ a)
 
     return greens_element{typeof(gamma_1), typeof(gamma_2), typeof(rho_ij), typeof(a), typeof(b), typeof(sign_a), typeof(L_z), typeof(alpha), typeof(k_f1)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha, k_f1, k_f2)
 end
@@ -41,8 +41,8 @@ function greens_element_i_init(gamma_1, gamma_2, z_i, L_z, alpha, accuracy)
 
     sign_a = (0, -1, +1, 0)
 
-    k_f1 = - log(accuracy) ./ (2 * L_z .+ a)
-    k_f2 = sqrt.(4 * alpha^2 .* a.^2 .- 4 * alpha * log(accuracy)) .- 2 * alpha .* a
+    k_f1 = sqrt.(4 * alpha^2 .* a.^2 .- 4 * alpha * log(accuracy)) .- 2 * alpha .* a
+    k_f2 = - log(accuracy) ./ (2 * L_z .+ a)
 
     return greens_element{typeof(gamma_1), typeof(gamma_2), typeof(rho_ij), typeof(a), typeof(b), typeof(sign_a), typeof(L_z), typeof(alpha), typeof(k_f1)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha, k_f1, k_f2)
 end
