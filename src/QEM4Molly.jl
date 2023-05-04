@@ -20,6 +20,7 @@ include("Energy_short.jl")
 include("Gaussian_int.jl")
 
 include("QEM_long.jl")
+include("Force_long_sum.jl")
 include("Force_long.jl")
 include("Energy_long_sum.jl")
 include("Energy_long.jl")

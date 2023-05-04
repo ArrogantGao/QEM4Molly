@@ -30,22 +30,11 @@ function QEM_long(L ; k_cutoff = 1.0, z_list = [], gamma_1 = 0, gamma_2 = 0, eps
 end
 
 function Molly.forces(inter::QEM_long, sys, neighbors=nothing)
-    n_atoms = size(sys.coords)[1]
-
-    # update the z_list via bulket sorting (will be updated later)
-    # inter.z_list = bulket_sorting(copy(sys.coord), inter.L)
-
-    # this is a naive version to generate the z_list, costing time O(NlogN), the result will be given in ascending order
-    z_coord = [coord[3] for coord in sys.coords]
-    inter.z_list = sortperm(z_coord)
-
     return F_long(sys, inter)
 
 end
 
 function Molly.potential_energy(inter::QEM_long, sys, neighbors=nothing)
-    n_atoms = size(sys.coords)[1]
-    z_coord = [coord[3] for coord in sys.coords]
-    inter.z_list = sortperm(z_coord)
+    
     return E_long(sys, inter)
 end

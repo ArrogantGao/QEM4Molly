@@ -24,6 +24,7 @@ using PyCall
 # include("Energy_long_test.jl")
 
 include("sort4sum_test.jl")
+include("Force_long_test.jl")
 
 
 # include("k_gen.jl")
