@@ -1,67 +1,67 @@
 export greens_element, greens_element_i_init, greens_element_ij_init, greens_element_init, Gamma_1, Gamma_2, dz_Gamma_1, dz_Gamma_2
 
 # this structure defines the elements need calculate the interaction between a pair wise interaction
-struct greens_element{G1, G2, RHO, A, B, SA, LZ, AL, KF}
-    gamma_1::G1
-    gamma_2::G2
-    rho_ij::RHO
-    a::A
-    b::B
-    sign_a::SA
-    L_z::LZ
-    alpha::AL
-    k_f1::KF
-    k_f2::KF
+
+struct greens_element{T}
+    gamma_1::T
+    gamma_2::T
+    rho_ij::T
+    a::NTuple{4, T}
+    b::NTuple{4, T}
+    sign_a::NTuple{4, T}
+    L_z::T
+    alpha::T
+    k_f1::NTuple{4, T}
+    k_f2::NTuple{4, T}
 end
 
-function greens_element_ij_init(gamma_1, gamma_2, z_i, z_j, rho_ij, L_z, alpha, accuracy)
+function greens_element_init(gamma_1::T, gamma_2::T, L_z::T, alpha::T) where T <: Number
+
+    rho_ij = 0.0
+
+    z_n = 0.0
+    z_p = 0.0
+    a = (z_n, z_p, 2.0 * L_z - z_p, 2.0 * L_z - z_n)
+    b = (1.0, gamma_1, gamma_2, gamma_1 * gamma_2)
+
+    sign_a = (0.0, -1.0, +1.0, 0.0)
+    k_f1 = (0.0, 0.0, 0.0, 0.0)
+    k_f2 = (0.0, 0.0, 0.0, 0.0)
+
+    return greens_element{typeof(gamma_1)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha, k_f1, k_f2)
+end
+
+function greens_element_ij_init(gamma_1::T, gamma_2::T, z_i::T, z_j::T, rho_ij::T, L_z::T, alpha::T, accuracy::T) where T <: Number
 
     z_n = abs(z_i - z_j)
     z_p = z_i + z_j
     a = (z_n, z_p, 2 * L_z - z_p, 2 * L_z - z_n)
-    b = (1, gamma_1, gamma_2, gamma_1 * gamma_2)
+    b = (1.0, gamma_1, gamma_2, gamma_1 * gamma_2)
 
-    sign_a = ( - sign(z_i - z_j), -1, +1, sign(z_i - z_j))
+    sign_a = ( - sign(z_i - z_j), -1.0, +1.0, sign(z_i - z_j))
 
-    k_f1 = sqrt.(4 * alpha^2 .* a.^2 .- 4 * alpha * log(accuracy)) .- 2 * alpha .* a
+    k_f1 = sqrt.(4.0 * alpha^2 .* a.^2 .- 4 * alpha * log(accuracy)) .- 2 * alpha .* a
     k_f2 = - log(accuracy) ./ (2 * L_z .+ a)
 
-    return greens_element{typeof(gamma_1), typeof(gamma_2), typeof(rho_ij), typeof(a), typeof(b), typeof(sign_a), typeof(L_z), typeof(alpha), typeof(k_f1)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha, k_f1, k_f2)
+    return greens_element{typeof(gamma_1)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha, k_f1, k_f2)
 end
 
 # the part below defines the sturcture for the self_interaction
 function greens_element_i_init(gamma_1, gamma_2, z_i, L_z, alpha, accuracy)
 
-    rho_ij = 0
+    rho_ij = 0.0
 
-    z_n = 0
-    z_p = 2 * z_i
-    a = (z_n, z_p, 2 * L_z - z_p, 2 * L_z - z_n)
-    b = (1, gamma_1, gamma_2, gamma_1 * gamma_2)
+    z_n = 0.0
+    z_p = 2.0 * z_i
+    a = (z_n, z_p, 2.0 * L_z - z_p, 2.0 * L_z - z_n)
+    b = (1.0, gamma_1, gamma_2, gamma_1 * gamma_2)
 
-    sign_a = (0, -1, +1, 0)
+    sign_a = (0.0, -1.0, +1.0, 0.0)
 
-    k_f1 = sqrt.(4 * alpha^2 .* a.^2 .- 4 * alpha * log(accuracy)) .- 2 * alpha .* a
-    k_f2 = - log(accuracy) ./ (2 * L_z .+ a)
+    k_f1 = sqrt.(4.0 * alpha^2 .* a.^2 .- 4.0 * alpha * log(accuracy)) .- 2.0 * alpha .* a
+    k_f2 = - log(accuracy) ./ (2.0 * L_z .+ a)
 
-    return greens_element{typeof(gamma_1), typeof(gamma_2), typeof(rho_ij), typeof(a), typeof(b), typeof(sign_a), typeof(L_z), typeof(alpha), typeof(k_f1)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha, k_f1, k_f2)
-end
-
-# the part below defines the sturcture for long range interaction
-function greens_element_init(gamma_1, gamma_2, L_z, alpha)
-
-    rho_ij = 0
-
-    z_n = 0
-    z_p = 0
-    a = (z_n, z_p, 2 * L_z - z_p, 2 * L_z - z_n)
-    b = (1, gamma_1, gamma_2, gamma_1 * gamma_2)
-
-    sign_a = (0, -1, +1, 0)
-    k_f1 = []
-    k_f2 = []
-
-    return greens_element{typeof(gamma_1), typeof(gamma_2), typeof(rho_ij), typeof(a), typeof(b), typeof(sign_a), typeof(L_z), typeof(alpha), typeof(k_f1)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha, k_f1, k_f2)
+    return greens_element{typeof(gamma_1)}(gamma_1, gamma_2, rho_ij, a, b, sign_a, L_z, alpha, k_f1, k_f2)
 end
 
 # these functions define the Gamma1/2, which is used in calculation of the potential

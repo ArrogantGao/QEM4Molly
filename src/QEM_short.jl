@@ -1,27 +1,30 @@
 export QEM_short
 
 
-mutable struct QEM_short{C, NL, NS, IP, G1, G2, EP, LA, AC, NT, AL}
-    r_cutoff::C # cutoff is the cutoff length of the short range interaction
+mutable struct QEM_short{TF, TI, NL, GP}
+    r_cutoff::TF # cutoff is the cutoff length of the short range interaction
     # cell_list::CL # cell list is the InPlaceNeighborList
     neighbor_list::NL
-    n_steps::NS # n_steps is the number of the currect step
-    iter_period::IP # after iter_period step of iterations, update the cell list
-    gamma_1::G1 
-    gamma_2::G2
-    eps_0::EP
-    L::LA # L = (L_x, L_y, L_z)
-    accuracy::AC # the accuracy needed for integral
-    N_t::NT # number of point used in Integrator
-    alpha::AL
+    n_steps::TI # n_steps is the number of the currect step
+    iter_period::TI # after iter_period step of iterations, update the cell list
+    gamma_1::TF
+    gamma_2::TF
+    eps_0::TF
+    L::NTuple{3, TF}
+    accuracy::TF # the accuracy needed for integral
+    N_t::TI # number of point used in Integrator
+    alpha::TF
+    Gauss_para::GP
 end
 
-function QEM_short(L, r_cutoff, alpha; iter_period = 100, gamma_1 = 0, gamma_2 = 0, eps_0 = 1, accuracy = 10^(-6), N_t = 30)
+function QEM_short(L, r_cutoff, alpha; iter_period = 100, gamma_1 = 0.0, gamma_2 = 0.0, eps_0 = 1.0, accuracy = 10^(-6), N_t = 30)
     
-    neighbor_list = []
+    neighbor_list = Tuple{Int64, Int64, Float64}[]
     n_steps = 0
 
-    return QEM_short{typeof(r_cutoff), typeof(neighbor_list), typeof(n_steps), typeof(iter_period), typeof(gamma_1), typeof(gamma_2), typeof(eps_0), typeof(L), typeof(accuracy), typeof(N_t), typeof(alpha)}(r_cutoff, neighbor_list, n_steps, iter_period, gamma_1, gamma_2, eps_0, L, accuracy, N_t, alpha)
+    Gauss_para = Gauss_parameter(N_t)
+
+    return QEM_short{typeof(r_cutoff), typeof(N_t), typeof(neighbor_list), Gauss_parameter}(r_cutoff, neighbor_list, n_steps, iter_period, gamma_1, gamma_2, eps_0, L, accuracy, N_t, alpha, Gauss_para)
 end
 
 function Molly.forces(inter::QEM_short, sys, neighbors=nothing)
@@ -32,7 +35,7 @@ function Molly.forces(inter::QEM_short, sys, neighbors=nothing)
     inter.n_steps += 1
     if (inter.n_steps - 1) % inter.iter_period == 0
         coords_q2d = [[x_i[1], x_i[2]] for x_i in sys.coords]
-        inter.neighbor_list = neighborlist(coords_q2d, inter.r_cutoff; unitcell = [inter.L[1], inter.L[2]])
+        inter.neighbor_list = neighborlist(coords_q2d, inter.r_cutoff + 0.1; unitcell = [inter.L[1], inter.L[2]])
     end
 
     F_short = [zeros(Float64, 3) for i in 1:n_atoms]

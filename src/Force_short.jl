@@ -54,8 +54,10 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
     # n_list = neighborlist([[x_i, y_i], [x_j, y_j]], inter.r_cutoff; unitcell = [L_x, L_y])
 
     #init the F_i and F_j
-    F_i = [0, 0, 0]
-    F_j = [0, 0, 0]
+    F_i = [0.0, 0.0, 0.0]
+    F_j = [0.0, 0.0, 0.0]
+
+    Gauss_para = inter.Gauss_para
 
     if n_list !== nothing
         coord_i, coord_j, rho_ij = n_list
@@ -66,13 +68,13 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
         k_f2 = maximum(element_i.k_f2)
 
 
-        # here I will change the 
+        
         if rho_ij != 0
 
-            F_sr_p_ij_1 = sum(Gauss_Legendre(F_sr_point_c; para = element_i, region = (0, k_f2), Step = inter.N_t, l = l) for l in 0:0)
+            F_sr_p_ij_1 = Gauss_int(F_sr_point_c, Gauss_para, element_i, region = (0.0, k_f2))
             F_sr_p_ij_2 = 0.5 * sum(element_i.b[l] * rho_ij / (element_i.a[l]^2 + rho_ij^2)^1.5 for l in 1:4)
             if single == false
-                F_sr_g_ij = sum(Gauss_Legendre(F_sr_gauss_c; para = element_i, region = (0, k_f1), Step = inter.N_t, l = l) for l in 0:0)
+                F_sr_g_ij = Gauss_int(F_sr_gauss_c, Gauss_para, element_i, region = (0.0, k_f1))
             else
                 F_sr_g_ij = 0
             end
@@ -87,19 +89,19 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
 
         # here I found that the force in z is different for particle i and j.
         # so 
-        F_sz_p_i_1 = sum(Gauss_Legendre(F_sz_point_c; para = element_i, region = (0, k_f2), Step = inter.N_t, l = l) for l in 0:0)
+        F_sz_p_i_1 = Gauss_int(F_sz_point_c, Gauss_para, element_i, region = (0.0, k_f2))
         F_sz_p_i_2 = 0.5 * sum(element_i.b[l] * element_i.a[l] * element_i.sign_a[l] / (element_i.a[l]^2 + rho_ij^2)^1.5 for l in 1:4)
         if single == false
-            F_sz_g_i = sum(Gauss_Legendre(F_sz_gauss_c; para = element_i, region = (0, k_f1), Step = inter.N_t, l = l) for l in 0:0)
+            F_sz_g_i = Gauss_int(F_sz_gauss_c, Gauss_para, element_i, region = (0.0, k_f1))
         else
             F_sz_g_i = 0
         end
         F_sz_i = + F_sz_p_i_1 - F_sz_p_i_2 - F_sz_g_i
 
-        F_sz_p_j_1 = sum(Gauss_Legendre(F_sz_point_c; para = element_j, region = (0, k_f2), Step = inter.N_t, l = l) for l in 0:0)
+        F_sz_p_j_1 = Gauss_int(F_sz_point_c, Gauss_para, element_j, region = (0.0, k_f2))
         F_sz_p_j_2 = 0.5 * sum(element_j.b[l] * element_j.a[l] * element_j.sign_a[l] / (element_j.a[l]^2 + rho_ij^2)^1.5 for l in 1:4)
         if single == false
-            F_sz_g_j = sum(Gauss_Legendre(F_sz_gauss_c; para = element_j, region = (0, k_f1), Step = inter.N_t, l = l) for l in 0:0)
+            F_sz_g_j = Gauss_int(F_sz_gauss_c, Gauss_para, element_j, region = (0.0, k_f1))
         else
             F_sz_g_j = 0
         end
@@ -127,10 +129,12 @@ function F_short_i(q_i, coord_i, inter; single::Bool = false)
     k_f1 = maximum(element.k_f1)
     k_f2 = maximum(element.k_f2)
 
-    F_sz_p_i_1 = sum(Gauss_Legendre(F_sz_point_c; para = element, region = (0, k_f2), Step = inter.N_t, l = l) for l in 0:0)
+    Gauss_para = inter.Gauss_para
+
+    F_sz_p_i_1 = Gauss_int(F_sz_point_c, Gauss_para, element, region = (0.0, k_f2))
     F_sz_p_i_2 = 0.5 * sum(element.b[l] * element.a[l] * element.sign_a[l] / (element.a[l]^3) for l in [2, 3])
     if single == false
-        F_sz_g_i = sum(Gauss_Legendre(F_sz_gauss_c; para = element, region = (0, k_f1), Step = inter.N_t, l = l) for l in 0:0)
+        F_sz_g_i = Gauss_int(F_sz_gauss_c, Gauss_para, element, region = (0.0, k_f1))
     else
         F_sz_g_i = 0
     end

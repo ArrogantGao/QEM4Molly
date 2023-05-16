@@ -26,27 +26,28 @@ function E_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
     n_list = neighborlist([[x_i, y_i], [x_j, y_j]], inter.r_cutoff; unitcell = [L_x, L_y])
 
     E_ij = 0.0
+    Gauss_para = inter.Gauss_para
 
     for (i, j, rho_ij) in n_list
         element = greens_element_ij_init(gamma_1, gamma_2, coord_i[3], coord_j[3], rho_ij, L_z, inter.alpha, inter.accuracy)
-        k_f1 = element.k_f1
-        k_f2 = element.k_f2
+        k_f1 = maximum(element.k_f1)
+        k_f2 = maximum(element.k_f2)
 
         if rho_ij != 0
 
-            E_s_p_ij_1 = sum(Gauss_Legendre(E_s_point_c; para = element, region = (0, k_f2[l]), Step = inter.N_t, l = l) for l in 1:4)
+            E_s_p_ij_1 = Gauss_int(E_s_point_c, Gauss_para, element, region = (0.0, k_f2))
             E_s_p_ij_2 = 0.5 * sum(element.b[l] / sqrt(element.a[l]^2 + rho_ij^2) for l in 1:4)
 
             if single == false
-                E_s_g_ij = sum(Gauss_Legendre(E_s_gauss_c; para = element, region = (0, k_f1[l]), Step = inter.N_t, l = l) for l in 1:4)
+                E_s_g_ij = Gauss_int(E_s_gauss_c, Gauss_para, element, region = (0.0, k_f1))
             else
-                E_s_g_ij = 0
+                E_s_g_ij = 0.0
             end
             # println("julia: ", E_s_p_ij_1, ' ', E_s_p_ij_2, ' ', E_s_g_ij)
 
             E_s_ij = - E_s_p_ij_1 + E_s_p_ij_2 + E_s_g_ij
         else
-            E_s_ij = 0
+            E_s_ij = 0.0
         end
 
         E_ij += q_i * q_j / (2 * π * eps_0) * E_s_ij
@@ -66,14 +67,16 @@ function E_short_i(q_i, coord_i, inter; single::Bool = false)
 
     x_i, y_i, z_i = coord_i
 
-    element = greens_element_i_init(gamma_1, gamma_2, z_i, L_z, inter.alpha, inter.accuracy)
-    k_f1 = element.k_f1
-    k_f2 = element.k_f2
+    Gauss_para = inter.Gauss_para
 
-    E_s_p_i_1 = sum(Gauss_Legendre(E_s_point_c; para = element, region = (0, k_f2[l]), Step = inter.N_t, l = l) for l in 1:4)
+    element = greens_element_i_init(gamma_1, gamma_2, z_i, L_z, inter.alpha, inter.accuracy)
+    k_f1 = maximum(element.k_f1)
+    k_f2 = maximum(element.k_f2)
+
+    E_s_p_i_1 = Gauss_int(E_s_point_c, Gauss_para, element, region = (0.0, k_f2))
     E_s_p_i_2 = 0.5 * sum(element.b[l] / (element.a[l]) for l in [2, 3, 4])
     if single == false
-        E_s_g_i = sum(Gauss_Legendre(E_s_gauss_c; para = element, region = (0, k_f1[l]), Step = inter.N_t, l = l) for l in 1:4)
+        E_s_g_i = Gauss_int(E_s_gauss_c, Gauss_para, element, region = (0.0, k_f1))
     else
         E_s_g_i = 0
     end
