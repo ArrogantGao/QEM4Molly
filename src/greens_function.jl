@@ -47,11 +47,11 @@ function greens_element_ij_init(gamma_1::T, gamma_2::T, z_i::T, z_j::T, rho_ij::
 end
 
 # the part below defines the sturcture for the self_interaction
-function greens_element_i_init(gamma_1, gamma_2, z_i, L_z, alpha, accuracy)
+function greens_element_i_init(gamma_1::T, gamma_2::T, z_i::T, L_z::T, alpha::T, accuracy::T) where T <: Number
 
-    rho_ij = 0.0
+    rho_ij = zero(T)
 
-    z_n = 0.0
+    z_n = zero(T)
     z_p = 2.0 * z_i
     a = (z_n, z_p, 2.0 * L_z - z_p, 2.0 * L_z - z_n)
     b = (1.0, gamma_1, gamma_2, gamma_1 * gamma_2)
@@ -65,52 +65,64 @@ function greens_element_i_init(gamma_1, gamma_2, z_i, L_z, alpha, accuracy)
 end
 
 # these functions define the Gamma1/2, which is used in calculation of the potential
-function Gamma_1(k, element::greens_element; l::Int = 0)
+function Gamma_1(k::T, element::greens_element; l::Int = 0) where T<:Number
+    green_u = zero(T)
     if l == 0
-        green_u = 0.5 * sum(element.b[i] * exp(- k * element.a[i]) for i in 1:4)
+        for i in 1:4
+            green_u += 0.5 * element.b[i] * exp(- k * element.a[i])
+        end
     else
         green_u = 0.5 * element.b[l] * exp(- k * element.a[l])
     end
-    green_d = element.gamma_1 * element.gamma_2 * exp(- 2 * k * element.L_z) - 1
+    green_d = element.gamma_1 * element.gamma_2 * exp(- 2 * k * element.L_z) - 1.0
     G_1 = green_u / green_d
     return G_1
 end
 
-function Gamma_2(k, element::greens_element; l::Int = 0)
+function Gamma_2(k::T, element::greens_element; l::Int = 0) where T<:Number
+    green_u = zero(T)
     if l == 0
-        green_u = 0.5 * sum(element.b[i] * exp(- k * element.a[i]) for i in 1:4)
+        for i in 1:4
+            green_u += 0.5 * element.b[i] * exp(- k * element.a[i])
+        end
     else
         green_u = 0.5 * element.b[l] * exp(- k * element.a[l])
     end
-    green_d = element.gamma_1 * element.gamma_2 * exp(- 2 * k * element.L_z) - 1
-    G_2 = element.gamma_1 * element.gamma_2 * green_u * exp(- 2 * k * element.L_z) / green_d
+    green_d = element.gamma_1 * element.gamma_2 * exp(- 2 * k * element.L_z) - 1.0
+    G_2 = element.gamma_1 * element.gamma_2 * green_u * exp(- 2.0 * k * element.L_z) / green_d
     return G_2
 end
 
 
 # these functions define the dz_Gamma1/2, which are used to calculate the forces
-function dz_Gamma_1(k, element::greens_element; l::Int = 0)
+function dz_Gamma_1(k::T, element::greens_element; l::Int = 0) where T<:Number
+    dz_green_u = zero(T)
     if l == 0
-        dz_green_u = 0.5 * sum(k * element.sign_a[i] * element.b[i] * exp(- k * element.a[i]) for i in 1:4)
+        for i in 1:4
+            dz_green_u += 0.5 * k * element.sign_a[i] * element.b[i] * exp(- k * element.a[i])
+        end
     else
         dz_green_u = 0.5 * k * element.sign_a[l] * element.b[l] * exp(- k * element.a[l])
     end
 
-    green_d = element.gamma_1 * element.gamma_2 * exp(- 2 * k * element.L_z) - 1
+    green_d = element.gamma_1 * element.gamma_2 * exp(- 2.0 * k * element.L_z) - 1.0
 
     dz_G_1 = dz_green_u / green_d
     return dz_G_1
 end
 
-function dz_Gamma_2(k, element::greens_element; l::Int = 0)
+function dz_Gamma_2(k::T, element::greens_element; l::Int = 0) where T<:Number
+    dz_green_u = zero(T)
     if l == 0
-        dz_green_u = 0.5 * sum(k * element.sign_a[i] * element.b[i] * exp(- k * element.a[i]) for i in 1:4)
+        for i in 1:4
+            dz_green_u += 0.5 * k * element.sign_a[i] * element.b[i] * exp(- k * element.a[i])
+        end
     else
         dz_green_u = 0.5 * k * element.sign_a[l] * element.b[l] * exp(- k * element.a[l])
     end
 
-    green_d = element.gamma_1 * element.gamma_2 * exp(- 2 * k * element.L_z) - 1
-    dz_G_2 = element.gamma_1 * element.gamma_2 * dz_green_u * exp(- 2 * k * element.L_z) / green_d
+    green_d = element.gamma_1 * element.gamma_2 * exp(- 2 * k * element.L_z) - 1.0
+    dz_G_2 = element.gamma_1 * element.gamma_2 * dz_green_u * exp(- 2.0 * k * element.L_z) / green_d
 
     return dz_G_2
 end

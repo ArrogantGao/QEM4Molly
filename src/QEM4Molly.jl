@@ -28,6 +28,6 @@ include("K_set_generator.jl")
 
 include("Quasi_Ewald_Method.jl")
 
-
+include("types.jl")
 
 end
