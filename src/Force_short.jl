@@ -76,15 +76,15 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
             if single == false
                 F_sr_g_ij = Gauss_int(F_sr_gauss_c, Gauss_para, element_i, region = (0.0, k_f1))
             else
-                F_sr_g_ij = 0
+                F_sr_g_ij = 0.0
             end
 
             F_sr_ij = - F_sr_p_ij_1 + F_sr_p_ij_2 + F_sr_g_ij
             F_sx_ij = F_sr_ij * (coord_i[1] - coord_j[1])/rho_ij
             F_sy_ij = F_sr_ij * (coord_i[2] - coord_j[2])/rho_ij
         else
-            F_sx_ij = 0
-            F_sy_ij = 0
+            F_sx_ij = 0.0
+            F_sy_ij = 0.0
         end
 
         # here I found that the force in z is different for particle i and j.
@@ -94,7 +94,7 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
         if single == false
             F_sz_g_i = Gauss_int(F_sz_gauss_c, Gauss_para, element_i, region = (0.0, k_f1))
         else
-            F_sz_g_i = 0
+            F_sz_g_i = 0.0
         end
         F_sz_i = + F_sz_p_i_1 - F_sz_p_i_2 - F_sz_g_i
 
@@ -103,7 +103,7 @@ function F_short_ij(q_i, q_j, coord_i, coord_j, inter::QEM_short; single::Bool =
         if single == false
             F_sz_g_j = Gauss_int(F_sz_gauss_c, Gauss_para, element_j, region = (0.0, k_f1))
         else
-            F_sz_g_j = 0
+            F_sz_g_j = 0.0
         end
         F_sz_j = + F_sz_p_j_1 - F_sz_p_j_2 - F_sz_g_j
 
@@ -136,11 +136,11 @@ function F_short_i(q_i, coord_i, inter; single::Bool = false)
     if single == false
         F_sz_g_i = Gauss_int(F_sz_gauss_c, Gauss_para, element, region = (0.0, k_f1))
     else
-        F_sz_g_i = 0
+        F_sz_g_i = 0.0
     end
 
     F_sz_i = - F_sz_p_i_1 + F_sz_p_i_2 + F_sz_g_i
-    F_i = - q_i^2 / (2 * π * eps_0) * [0, 0, F_sz_i]
+    F_i = - q_i^2 / (2 * π * eps_0) * [0.0, 0.0, F_sz_i]
 
     return F_i
 end
