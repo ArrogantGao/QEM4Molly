@@ -5,6 +5,7 @@ using Unitful
 using StatProfilerHTML
 using BenchmarkTools
 using LinearAlgebra
+using SpecialFunctions
 
 n_atoms = 100
 atom_mass = 1.0u"NoUnits"
@@ -58,3 +59,20 @@ simulator = VelocityVerlet(
 )
 
 Force = Molly.forces(QEM_long_inter, sys) +  Molly.forces(QEM_short_inter, sys)
+
+
+coords_1 = [5.0, 5.0, 5.0]
+coords_2 = [6.0, 5.0, 5.0]
+F_s = F_short_ij(1, 1, coords_1, coords_2, QEM_short_inter)
+
+Gauss_para = Gauss_parameter(30)
+
+ge_ij_1 = greens_element_ij_init(0.5, 0.8, 2.2, .9, 1.0, 2.2, 10.0, 0.1)
+
+function F_sz_gauss_c(k::T, element::greens_element; l::Int = 0) where T<:Number
+    f_sz_g = dz_Gamma_1(k, element; l = l) * exp(- k^2 / (4 * element.alpha)) * besselj0(k * element.rho_ij)
+    return f_sz_g
+end
+
+I = Gauss_int(F_sz_gauss_c, Gauss_para, ge_ij_1, region = (0.0, 1.0))
+
