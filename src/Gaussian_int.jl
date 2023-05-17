@@ -2,14 +2,13 @@ export Gauss_int
 # export Gauss_Legendre
 export Gauss_parameter
 
-# the finite integral is defined by \int_a^b f(x, para) \w(x) dx = \sum_{i = 1}^{step} f(x_i, para) w_i, where (x_i, w_i) is given by the package GaussQuadrature.jl
 
 struct Gauss_parameter{T}
     sw::Vector{NTuple{2, T}}
 end
 
 Gauss_parameter(Step::Int) = Gauss_parameter{Float64}([tuple(legendre(Step)[1][i], legendre(Step)[2][i]) for i in 1:Step])
-# Gauss_parameter(s::T, w::T) where T <: AbstractVector = Gauss_parameter{length(s), eltype(s)}(tuple(s...), tuple(w...))
+
 
 # here by profiling I found that half of the time cost is caused by function laguree(), so generating the parameter once will be better
 
