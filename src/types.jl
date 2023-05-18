@@ -15,7 +15,7 @@ dist2(x::Number, y::Number) = abs2(x - y)
 dist2(x::Point, y::Point) = sum(abs2, x - y)
 
 
-struct Force{T}
-    F::Vector{Point{3,T}}
+struct PointArray{N, T}
+    pointArray::Vector{Point{N,T}}
 end
 
